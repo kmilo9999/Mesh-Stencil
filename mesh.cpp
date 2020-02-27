@@ -82,3 +82,26 @@ void Mesh::saveToFile(const std::string &filePath)
 
     outfile.close();
 }
+
+void Mesh::createHalfEdges()
+{
+   std::map<Edge*,HalfEdge*> Edges;
+
+   for(Vector3i f: _faces)
+   {
+      Face* face = new Face();
+      for(int i = 0 ; i < 3;++i)
+      {
+          HalfEdge* halfEdg = new HalfEdge();
+
+          Edge e=  new Edge(f[i],f[i+1%3]);
+          HalfEdge* opposite(f[i+1%3],f[i]);
+
+
+          halfEdg->face = face;
+          halfEdg->edge = e;
+
+
+      }
+   }
+}

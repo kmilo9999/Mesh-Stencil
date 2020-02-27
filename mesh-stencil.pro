@@ -18,9 +18,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 QMAKE_CXXFLAGS += -msse2
 
 SOURCES += main.cpp \
-    mesh.cpp
+    edge.cpp \
+    face.cpp \
+    halfedge.cpp \
+    mesh.cpp \
+    vertex.cpp
 
 HEADERS += \
+    edge.h \
+    face.h \
+    halfedge.h \
     mesh.h \
     util/tiny_obj_loader.h \
     Eigen/Cholesky \
@@ -322,4 +329,5 @@ HEADERS += \
     Eigen/src/SVD/JacobiSVD_LAPACKE.h \
     Eigen/src/SVD/SVDBase.h \
     Eigen/src/SVD/UpperBidiagonalization.h \
-    Eigen/src/UmfPackSupport/UmfPackSupport.h
+    Eigen/src/UmfPackSupport/UmfPackSupport.h \
+    vertex.h
