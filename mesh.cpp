@@ -6,6 +6,7 @@
 #include <QFileInfo>
 #include <QString>
 
+
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "util/tiny_obj_loader.h"
 
@@ -85,21 +86,56 @@ void Mesh::saveToFile(const std::string &filePath)
 
 void Mesh::createHalfEdges()
 {
-   std::map<Edge*,HalfEdge*> Edges;
+
+   std::map<std::string ,std::shared_ptr<HalfEdge>> edges;
 
    for(Vector3i f: _faces)
    {
-      Face* face = new Face();
+      std::shared_ptr<Face> face(new Face());
       for(int i = 0 ; i < 3;++i)
       {
-          HalfEdge* halfEdg = new HalfEdge();
+          unsigned int index1 = f[i];
+          unsigned int index2 = f[i+1%3];
 
-          Edge e=  new Edge(f[i],f[i+1%3]);
-          HalfEdge* opposite(f[i+1%3],f[i]);
+          std::map<unsigned int ,std::shared_ptr<Vertex>>::iterator vertexIndexIt =
+                  myVertices.find(index1);
+
+          std::shared_ptr<Vertex> currentVertex;
+          if(vertexIndexIt == myVertices.end())
+          {
+            currentVertex = std::shared_ptr<Vertex>(new Vertex(_vertices[f[i]]));
+          }
+          else
+          {
+            currentVertex = vertexIndexIt->second;
+          }
+
+          std::string strKey = std::to_string(index1)+","+std::to_string(index2);
+          std::string strInvKey = std::to_string(index2)+","+std::to_string(index1);
 
 
-          halfEdg->face = face;
-          halfEdg->edge = e;
+          std::shared_ptr<HalfEdge> halfEdg(new HalfEdge());
+          std::shared_ptr<Edge> ed(new Edge(f[i],f[i+1%3]));
+          std::map<std::string ,std::shared_ptr<HalfEdge>>::iterator it =
+              edges.find(strKey);
+          std::map<std::string ,std::shared_ptr<HalfEdge>>::iterator it2 =
+              edges.find(strInvKey);
+
+          if(it == edges.end())
+          {
+            ed->myHalfEdge = halfEdg;
+            currentVertex->myHalfEdges.push_back(halfEdg);
+            face->myHalfEdge = halfEdg;
+            halfEdg->myEdge = ed;
+          }
+
+          if(it2 != edges.end())
+          {
+             halfEdg->myOpposite = it2->second;
+             edges.erase(it);
+             edges.erase(it2);
+
+          }
 
 
       }

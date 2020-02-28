@@ -1,9 +1,8 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include <vector>
 
-#include <Eigen/StdVector>
+#include "common.h"
 #include "halfedge.h"
 
 EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(Eigen::Matrix2f)
@@ -21,13 +20,14 @@ public:
 
 
 private:
-
+    std::map<unsigned int, std::shared_ptr<Vertex>> myVertices;
     void createHalfEdges();
     std::vector<Eigen::Vector3f> _vertices;
     std::vector<Eigen::Vector3i> _faces;
 
     std::vector<HalfEdge> _halfEdges;
     std::vector<Edge> _edges;
+    std::vector<Vertex*> _hVertices;
 
 };
 

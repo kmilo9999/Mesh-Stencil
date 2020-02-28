@@ -1,21 +1,19 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include <Eigen/StdVector>
+#include "common.h"
+
 class HalfEdge;
 
-struct Point
-{
-    Eigen::Vector3f Point;
-};
+typedef Eigen::Vector3f Point;
 
 class Vertex
 {
 public:
-    Vertex();
+    Vertex(Point p);
 
-    HalfEdge* h;
-
+    std::vector<std::shared_ptr<HalfEdge>> myHalfEdges;
+    Point myPosition;
 };
 
 #endif // VERTEX_H

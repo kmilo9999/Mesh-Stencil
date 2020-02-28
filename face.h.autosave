@@ -8,7 +8,7 @@ class Face
 {
 public:
     Face();
-    std::unique_ptr<HalfEdge> myHalfEdge;
+    std::shared_ptr<HalfEdge> myHalfEdge;
 };
 
 #endif // FACE_H

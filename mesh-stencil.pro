@@ -25,6 +25,7 @@ SOURCES += main.cpp \
     vertex.cpp
 
 HEADERS += \
+    common.h \
     edge.h \
     face.h \
     halfedge.h \

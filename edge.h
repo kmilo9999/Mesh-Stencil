@@ -1,7 +1,8 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include <Eigen/StdVector>
+
+#include "common.h"
 
 class HalfEdge;
 
@@ -9,13 +10,11 @@ class Edge
 {
 public:
     Edge(int pA , int  pB);
-    HalfEdge *myHalfEdge;
+    std::shared_ptr<HalfEdge> myHalfEdge;
     int pointA;
     int pointB;
 
-    bool operator == (const Edge& d) const {
-       return pointA == d.pointA && pointB == d.pointB;
-    }
+    bool operator == (const Edge& d) const ;
 };
 
 #endif // EDGE_H

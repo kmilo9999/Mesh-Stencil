@@ -1,6 +1,6 @@
 #include "vertex.h"
 
-Vertex::Vertex()
+Vertex::Vertex(Point p):myPosition(p)
 {
 
 }
