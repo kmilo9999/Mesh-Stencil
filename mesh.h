@@ -18,10 +18,13 @@ public:
     void loadFromFile(const std::string &filePath);
     void saveToFile(const std::string &filePath);
 
+   void createHalfEdges();
+   void processeVertexEdges(int index);
+
 
 private:
     std::map<unsigned int, std::shared_ptr<Vertex>> myVertices;
-    void createHalfEdges();
+
     std::vector<Eigen::Vector3f> _vertices;
     std::vector<Eigen::Vector3i> _faces;
 

@@ -87,15 +87,21 @@ void Mesh::saveToFile(const std::string &filePath)
 void Mesh::createHalfEdges()
 {
 
-   std::map<std::string ,std::shared_ptr<HalfEdge>> edges;
+   std::map<std::string ,std::shared_ptr<Edge>> edges;
 
    for(Vector3i f: _faces)
    {
+
       std::shared_ptr<Face> face(new Face());
+      std::shared_ptr<HalfEdge> before ;
+      std::shared_ptr<HalfEdge> first ;
+
+
       for(int i = 0 ; i < 3;++i)
       {
+
           unsigned int index1 = f[i];
-          unsigned int index2 = f[i+1%3];
+          unsigned int index2 = f[(i+1)%3];
 
           std::map<unsigned int ,std::shared_ptr<Vertex>>::iterator vertexIndexIt =
                   myVertices.find(index1);
@@ -104,6 +110,8 @@ void Mesh::createHalfEdges()
           if(vertexIndexIt == myVertices.end())
           {
             currentVertex = std::shared_ptr<Vertex>(new Vertex(_vertices[f[i]]));
+            currentVertex->myIndex = index1;
+            myVertices[index1] = currentVertex;
           }
           else
           {
@@ -114,30 +122,68 @@ void Mesh::createHalfEdges()
           std::string strInvKey = std::to_string(index2)+","+std::to_string(index1);
 
 
-          std::shared_ptr<HalfEdge> halfEdg(new HalfEdge());
-          std::shared_ptr<Edge> ed(new Edge(f[i],f[i+1%3]));
-          std::map<std::string ,std::shared_ptr<HalfEdge>>::iterator it =
+          std::shared_ptr<HalfEdge> currentHalfEdge(new HalfEdge());
+          if(i == 0)
+          {
+            first = currentHalfEdge;
+          }
+
+          std::shared_ptr<Edge> currentEdge(new Edge(f[i],f[(i+1)%3]));
+          std::map<std::string ,std::shared_ptr<Edge>>::iterator it =
               edges.find(strKey);
-          std::map<std::string ,std::shared_ptr<HalfEdge>>::iterator it2 =
+          std::map<std::string ,std::shared_ptr<Edge>>::iterator it2 =
               edges.find(strInvKey);
+
 
           if(it == edges.end())
           {
-            ed->myHalfEdge = halfEdg;
-            currentVertex->myHalfEdges.push_back(halfEdg);
-            face->myHalfEdge = halfEdg;
-            halfEdg->myEdge = ed;
+            edges[strKey] = currentEdge;
+            currentEdge->myHalfEdge = currentHalfEdge;
+            currentVertex->myHalfEdge = currentHalfEdge;
+            face->myHalfEdge = currentHalfEdge;
+            face->myFace = f;
+            currentHalfEdge->myEdge = currentEdge;
+            currentHalfEdge->myFace = face;
+            currentHalfEdge->myVertex = currentVertex;
+
+            if(before != nullptr)
+            {
+               before->myNext = currentHalfEdge;
+            }
+
           }
 
           if(it2 != edges.end())
           {
-             halfEdg->myOpposite = it2->second;
+             currentHalfEdge->myOpposite = it2->second->myHalfEdge;
+             if(it2->second->myHalfEdge->myOpposite == nullptr)
+             {
+                 it2->second->myHalfEdge->myOpposite = currentHalfEdge;
+             }
+             it = edges.find(strKey);
              edges.erase(it);
              edges.erase(it2);
-
           }
 
+          before = currentHalfEdge;
 
       }
+
+     before->myNext = first;
+
+
    }
+}
+
+void Mesh::processeVertexEdges(int index)
+{
+   std::shared_ptr<Vertex> v = myVertices[index];
+   std::shared_ptr<HalfEdge> h =  v->myHalfEdge;
+
+   do{
+      std::cout << h->myEdge->pointA << " "<< h->myEdge->pointB << std::endl;
+      h = h->myOpposite->myNext;
+   }while(h != v->myHalfEdge);
+
+
 }

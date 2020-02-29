@@ -12,8 +12,9 @@ class Vertex
 public:
     Vertex(Point p);
 
-    std::vector<std::shared_ptr<HalfEdge>> myHalfEdges;
+    std::shared_ptr<HalfEdge> myHalfEdge;
     Point myPosition;
+    int myIndex;
 };
 
 #endif // VERTEX_H
