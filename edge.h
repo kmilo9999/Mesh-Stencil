@@ -13,6 +13,8 @@ public:
     std::shared_ptr<HalfEdge> myHalfEdge;
     int pointA;
     int pointB;
+    void flipEdge();
+    void slipEdge();
 
     bool operator == (const Edge& d) const ;
 };

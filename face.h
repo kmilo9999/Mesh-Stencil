@@ -9,7 +9,7 @@ class Face
 public:
     Face();
     std::shared_ptr<HalfEdge> myHalfEdge;
-    Eigen::Vector3i myFace;
+    Eigen::Vector3i myFaceIndexes;
 };
 
 #endif // FACE_H

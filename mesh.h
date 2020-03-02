@@ -20,11 +20,14 @@ public:
 
    void createHalfEdges();
    void processeVertexEdges(int index);
-
+   void testFlipEdge(int index);
+   void flipEdge(int vertexIndex);
+   void splitEdge(int vertexIndex);
 
 private:
-    std::map<unsigned int, std::shared_ptr<Vertex>> myVertices;
+   // std::map<unsigned int, std::shared_ptr<Vertex>> myVertices;
 
+    std::vector<std::shared_ptr<Vertex>> myVertices;
     std::vector<Eigen::Vector3f> _vertices;
     std::vector<Eigen::Vector3i> _faces;
 

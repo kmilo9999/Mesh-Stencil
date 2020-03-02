@@ -57,7 +57,9 @@ int main(int argc, char *argv[])
     // TODO
     // Convert the mesh into your own data structure
     m.createHalfEdges();
-    m.processeVertexEdges(0);
+    //m.processeVertexEdges(0);
+    //m.testFlipEdge(0);
+    m.splitEdge(0);
     // TODO
     // Implement the operations
     if (method == "subdivide"){
