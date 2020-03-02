@@ -298,10 +298,10 @@ void Mesh::splitEdge(int vertexIndex)
     newFace2->myFaceIndexes = Eigen::Vector3i(v5->myIndex,v2->myIndex,v3->myIndex);
 
     std::shared_ptr<Face> newFace3(new Face());
-    newFace2->myFaceIndexes = Eigen::Vector3i(v5->myIndex,v4->myIndex,v2->myIndex);
+    newFace3->myFaceIndexes = Eigen::Vector3i(v5->myIndex,v4->myIndex,v2->myIndex);
 
     std::shared_ptr<Face> newFace4(new Face());
-    newFace2->myFaceIndexes = Eigen::Vector3i(v5->myIndex,v1->myIndex,v4->myIndex);
+    newFace4->myFaceIndexes = Eigen::Vector3i(v5->myIndex,v1->myIndex,v4->myIndex);
 
     std::vector<std::shared_ptr<Face>> newFaces;
     newFaces.push_back(newFace1);
@@ -323,8 +323,14 @@ void Mesh::splitEdge(int vertexIndex)
         if(j % 2 == 1)
         {
            unsigned int index1 = f->myFaceIndexes[j];
-           std::shared_ptr<HalfEdge> h = myVertices[index1]->myHalfEdge;
-           h->myFace = f;
+           std::shared_ptr<HalfEdge> halfEdge = myVertices[index1]->myHalfEdge;
+           std::shared_ptr<Face> face (new Face());
+           face->myFaceIndexes = f->myFaceIndexes;
+           face->myHalfEdge =halfEdge;
+           halfEdge->myFace = face;
+           before->myNext = halfEdge;
+
+           before = halfEdge;
         }
         else
         {
@@ -340,7 +346,7 @@ void Mesh::splitEdge(int vertexIndex)
 
 
             std::shared_ptr<HalfEdge> halfEdge(new HalfEdge());
-            if(i == 0)
+            if(j == 0)
             {
               first = halfEdge;
             }
@@ -375,13 +381,16 @@ void Mesh::splitEdge(int vertexIndex)
                halfEdge->myOpposite = it2->second->myHalfEdge;
                it2->second->myHalfEdge->myOpposite = halfEdge;
                memEdges.erase(it2);
+               it = memEdges.find(strKey);
                memEdges.erase(it);
+
             }
 
             before = halfEdge;
           }
 
         }
+      before->myNext = first;
 
     }
 
