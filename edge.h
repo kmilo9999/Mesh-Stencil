@@ -11,8 +11,8 @@ class Edge
 public:
     Edge(int pA , int  pB);
     std::shared_ptr<HalfEdge> myHalfEdge;
-    int pointA;
-    int pointB;
+    unsigned int pointA;
+    unsigned int pointB;
     void flipEdge();
     void slipEdge();
 

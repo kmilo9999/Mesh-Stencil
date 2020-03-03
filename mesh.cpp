@@ -87,7 +87,7 @@ void Mesh::saveToFile(const std::string &filePath)
 void Mesh::createHalfEdges()
 {
 
-   myVertices = std::vector<std::shared_ptr<Vertex>>(_vertices.size(),nullptr);
+
    std::map<std::string ,std::shared_ptr<Edge>> edges;
 
    for(Vector3i f: _faces)
@@ -295,13 +295,16 @@ void Mesh::splitEdge(int vertexIndex)
     newFace1->myFaceIndexes= Eigen::Vector3i(v5->myIndex,v3->myIndex,v1->myIndex);
 
     std::shared_ptr<Face> newFace2(new Face());
-    newFace2->myFaceIndexes = Eigen::Vector3i(v5->myIndex,v2->myIndex,v3->myIndex);
+    newFace2->myFaceIndexes = Eigen::Vector3i(v5->myIndex,v1->myIndex,v4->myIndex);
 
     std::shared_ptr<Face> newFace3(new Face());
     newFace3->myFaceIndexes = Eigen::Vector3i(v5->myIndex,v4->myIndex,v2->myIndex);
 
     std::shared_ptr<Face> newFace4(new Face());
-    newFace4->myFaceIndexes = Eigen::Vector3i(v5->myIndex,v1->myIndex,v4->myIndex);
+    newFace4->myFaceIndexes = Eigen::Vector3i(v5->myIndex,v2->myIndex,v3->myIndex);
+
+
+
 
     std::vector<std::shared_ptr<Face>> newFaces;
     newFaces.push_back(newFace1);
@@ -312,6 +315,7 @@ void Mesh::splitEdge(int vertexIndex)
     std::map<std::string ,std::shared_ptr<Edge>> memEdges;
 
 
+
     for(int i = 0 ; i < 4; ++i)
     {
       std::shared_ptr<Face> f = newFaces[i];
@@ -320,10 +324,13 @@ void Mesh::splitEdge(int vertexIndex)
 
       for(int j = 0; j < 3;j++)
       {
+        unsigned int index1 = f->myFaceIndexes[j];
+        unsigned int index2 = f->myFaceIndexes[(j+1)%3];
+        std::shared_ptr<HalfEdge> halfEdge = myVertices[index1]->myHalfEdge;
+
         if(j % 2 == 1)
         {
-           unsigned int index1 = f->myFaceIndexes[j];
-           std::shared_ptr<HalfEdge> halfEdge = myVertices[index1]->myHalfEdge;
+
            std::shared_ptr<Face> face (new Face());
            face->myFaceIndexes = f->myFaceIndexes;
            face->myHalfEdge =halfEdge;
@@ -334,8 +341,7 @@ void Mesh::splitEdge(int vertexIndex)
         }
         else
         {
-            unsigned int index1 = f->myFaceIndexes[j];
-            unsigned int index2 = f->myFaceIndexes[(j+1)%3];
+
 
             std::string strKey = std::to_string(index1)+","+std::to_string(index2);
             std::string strInvKey = std::to_string(index2)+","+std::to_string(index1);
